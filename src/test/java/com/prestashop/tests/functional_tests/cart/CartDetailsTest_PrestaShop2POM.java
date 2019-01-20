@@ -42,8 +42,10 @@ public class CartDetailsTest_PrestaShop2POM extends TestBase {
 //      5. Select a different size
         Random rndmSize = new Random();
         int randomSize = random.nextInt(2)+1;
-
-        cartDetailPage.randomSizeOnCart.click();
+//        driver.findElement(By.xpath("//select[@id='group_1']/option[@value='"+randomSize+"']")).click();
+//
+//        cartDetailPage.randomSizeOnCart.click();
+        cartDetailPage.randomSizeOnCart(randomSize);
 
 //      6. Click on add to cart
         cartDetailPage.addToCartonCart.click();
@@ -55,7 +57,7 @@ public class CartDetailsTest_PrestaShop2POM extends TestBase {
         String actualConfirmationMessage =actConfirmationMessage.getAttribute("innerText");
         System.out.println("Expected confirmation message: " + expectedConfirmationMessage + " | Actual confirmation message: " + actualConfirmationMessage);
 
-//        Assert.assertEquals(expectedConfirmationMessage, actualConfirmationMessage);
+        Assert.assertEquals(expectedConfirmationMessage.trim(), actualConfirmationMessage.trim());
 
 //      8. Dismiss the confirmation window by clicking on the x icon
         cartDetailPage.xIconOnCart.click();
@@ -70,19 +72,12 @@ public class CartDetailsTest_PrestaShop2POM extends TestBase {
 //      11. Enter a random quantity between 2 and 5
         randomQuantity = cartDetailPage.quantityBoxOnCart;
         randomQuantity();
-//        WebElement iframe = driver.findElement(By.xpath("//iframe[@class='fancybox-iframe']"));
-//        driver.switchTo().frame(iframe);
-//
-//        randomQuantity = driver.findElement(By.xpath("//a[@class='btn btn-default button-plus product_quantity_up']"));
-//        Thread.sleep(2000);
-//        randomQuantity();
-//        Thread.sleep(2000);
 
 //      12. Select a different size
-        driver.findElement(By.xpath("//select[@id='group_1']/option[2]")).click();
+        cartDetailPage.randomSizeOnCart(randomSize);
 
 //      13. Click on add to cart
-        driver.findElement(By.xpath("//button[@class='exclusive']")).click();
+        cartDetailPage.addToCartonCart.click();
 
 //      14. Verify confirmation message Product successfully added to your shopping cart
         String expectedMessage = "Product successfully added to your shopping cart";
@@ -90,10 +85,10 @@ public class CartDetailsTest_PrestaShop2POM extends TestBase {
                 By.xpath("//i[@class = 'icon-ok']//parent::h2"));
         String actualMessage = actMessage.getAttribute("innerText").trim();
         System.out.println("Expected message: " + expectedMessage + " | Actual message: " + actualMessage);
-//        Assert.assertEquals(actualMessage, expectedMessage);
+        Assert.assertEquals(actualMessage.trim(), expectedMessage.trim());
 
 //      15. Dismiss the confirmation window by clicking on the x icon
-        driver.findElement(By.xpath("//span[@title='Close window']")).click();
+        cartDetailPage.xIconOnCart.click();
 
 //      16. Hover over the Cart icon
         actions.moveToElement(driver.findElement(By.xpath("//a[@title='View my shopping cart']"))).perform();

@@ -32,6 +32,10 @@ public class Homepage {
     public WebElement signInHomePage;
 
 
+    @FindBy(xpath = "//div[@class='shopping_cart']/a")
+    public WebElement cartIconAtHomePage;
+
+
 }
 
 /*

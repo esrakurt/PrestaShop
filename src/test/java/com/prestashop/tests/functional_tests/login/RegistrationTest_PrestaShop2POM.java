@@ -23,7 +23,6 @@ public class RegistrationTest_PrestaShop2POM extends TestBase {
         Random random = new Random();
         MyAccountPage myAccountPage = new MyAccountPage();
         MyAddressesPage myAddressesPage = new MyAddressesPage();
-
         PersonalInformationPage personalInformationPage = new PersonalInformationPage();
 
         //        1. Open browser

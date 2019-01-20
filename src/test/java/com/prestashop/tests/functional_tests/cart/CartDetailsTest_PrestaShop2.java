@@ -28,35 +28,13 @@ public class CartDetailsTest_PrestaShop2 extends TestBase {
 
         randomQuantity = driver.findElement(By.xpath("//a[@class='btn btn-default button-plus product_quantity_up']/span"));
         Random random = new Random();
-        int quantity = random.nextInt(2)+1;
-
-        switch (quantity){
-
-            case 0:
-                randomQuantity.click();
-                break;
-            case 1:
-           randomQuantity.click();
-           randomQuantity.click();
-                break;
-            case 2:
-        randomQuantity.click();
-        randomQuantity.click();
-        randomQuantity.click();
-                break;
-            case 3:
-        randomQuantity.click();
-        randomQuantity.click();
-        randomQuantity.click();
-        randomQuantity.click();
-                break;
-        }
+        int quantity = random.nextInt(2) + 1;
+        randomQuantity();
 
 //      5. Select a different size
         Random rndmSize = new Random();
-        int randomSize = random.nextInt(3)+1;
-
-        driver.findElement(By.xpath("//select[@id='group_1']/option[2]")).click();
+        int randomSize = random.nextInt(2) + 1;
+        driver.findElement(By.xpath("//select[@id='group_1']/option[@value='"+randomSize+"']")).click();
 
 //      6. Click on add to cart
         driver.findElement(By.xpath("//button[@class='exclusive']//span")).click();
@@ -89,8 +67,10 @@ public class CartDetailsTest_PrestaShop2 extends TestBase {
         Thread.sleep(2000);
 
 //      12. Select a different size
-        driver.findElement(By.xpath("//select[@id='group_1']/option[2]")).click();
-
+//        driver.findElement(By.xpath("//select[@id='group_1']/option[@value='2']")).click();
+        Random rndmSizeForSaleItem = new Random();
+        int randomSizeForSaleItem = random.nextInt(2) + 1;
+        driver.findElement(By.xpath("//select[@id='group_1']/option[@value='"+randomSizeForSaleItem+"']")).click();
 
 //      13. Click on add to cart
         driver.findElement(By.xpath("//button[@class='exclusive']")).click();
@@ -112,34 +92,35 @@ public class CartDetailsTest_PrestaShop2 extends TestBase {
 //      17. Verify that correct total is displayed
 
 //      18. Verify that total is correct based on the price and item count of the products you added to cart. (Shipping is always $2)
-
     }
 
-    public void randomQuantity(){
-        Random random = new Random();
-        int quantity = random.nextInt(3);
+        public void randomQuantity(){
+            Random random = new Random();
+            int quantity = random.nextInt(3);
 
-        switch (quantity){
+            switch (quantity){
 
-            case 0:
-                randomQuantity.click();
-                break;
-            case 1:
-                randomQuantity.click();
-                randomQuantity.click();
-                break;
-            case 2:
-                randomQuantity.click();
-                randomQuantity.click();
-                randomQuantity.click();
-                break;
-            case 3:
-                randomQuantity.click();
-                randomQuantity.click();
-                randomQuantity.click();
-                randomQuantity.click();
-                break;
+                case 0:
+                    randomQuantity.click();
+                    break;
+                case 1:
+                    randomQuantity.click();
+                    randomQuantity.click();
+                    break;
+                case 2:
+                    randomQuantity.click();
+                    randomQuantity.click();
+                    randomQuantity.click();
+                    break;
+                case 3:
+                    randomQuantity.click();
+                    randomQuantity.click();
+                    randomQuantity.click();
+                    randomQuantity.click();
+                    break;
+            }
         }
+
     }
-}
+
 

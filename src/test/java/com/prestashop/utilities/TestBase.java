@@ -8,6 +8,7 @@ package com.prestashop.utilities;
         import org.openqa.selenium.chrome.ChromeDriver;
         import org.openqa.selenium.interactions.Actions;
         import org.openqa.selenium.support.ui.Select;
+        import org.testng.Assert;
         import org.testng.annotations.AfterMethod;
         import org.testng.annotations.BeforeClass;
         import org.testng.annotations.BeforeMethod;
@@ -21,7 +22,7 @@ public class TestBase {
     protected Actions actions;
     protected SoftAssert softAssert;
     protected Random random;
-    protected Faker faker;
+//    protected Faker faker;
 
 //
 //    @BeforeClass
@@ -45,7 +46,20 @@ public class TestBase {
 //    public void tearDown(){
 //        driver.quit();
 //    }
-//
+
+    Faker faker = new Faker();
+
+    public String rndmEmail = faker.internet().emailAddress();
+    public String rndmName = faker.name().firstName();
+    public String rndmLastName = faker.name().lastName();
+    public String rndmPassword = faker.internet().password();
+    public int rndmDay = faker.number().numberBetween(1, 31);
+    public int rndmMonth = faker.number().numberBetween(1, 12);
+    public String rndmAddress = faker.address().streetAddress();
+    public String rndmCity = faker.address().city();
+    public String rndmZip = faker.address().zipCode().substring(0,5);
+    public String rndmCellPhone = faker.phoneNumber().cellPhone();
+
 
     public void signInCreateAccount(){
         //        1. Open browser
@@ -55,14 +69,80 @@ public class TestBase {
         driver.findElement(By.linkText("Sign in")).click();
 
 //        4. Enter new valid email to the email field
-        Faker faker = new Faker();
-        String email = faker.internet().emailAddress();
-        driver.findElement(By.id("email_create")).sendKeys(email);
+//        Faker faker = new Faker();
+//        String email = faker.internet().emailAddress();
+        driver.findElement(By.id("email_create")).sendKeys(rndmEmail);
 
 //        5. Click on Create Account
         driver.findElement(By.xpath("//button[@class='btn btn-default button button-medium exclusive']//span")).click();
     }
 
+    public void createAccount(){
+
+        //        7. Fill out all the required steps
+        Random random = new Random();
+        int x = random.nextInt(2);
+        switch (x){
+            case 0: driver.findElement(By.id("id_gender1")).click();
+                break;
+            case 1: driver.findElement(By.id("id_gender2")).click();
+                break;
+        }
+        String rndmName = faker.name().firstName();
+        driver.findElement(By.id("customer_firstname")).sendKeys(rndmName);
+        String rndmLastName = faker.name().lastName();
+        driver.findElement(By.id("customer_lastname")).sendKeys(rndmLastName);
+        String rndmPassword = faker.internet().password();
+        driver.findElement(By.id("passwd")).sendKeys(rndmPassword);
+        WebElement day = driver.findElement(By.id("days"));
+        day.click();
+        Select select1 = new Select(day);
+        int rndmDay = random.nextInt(30) + 1;
+        select1.selectByIndex(rndmDay);
+
+        WebElement month = driver.findElement(By.id("months"));
+        month.click();
+        Select select2 = new Select(month);
+        int rndmMonth = random.nextInt(11) + 1;
+        select2.selectByIndex(rndmMonth);
+
+        WebElement year = driver.findElement(By.id("years"));
+        year.click();
+        Select select3 = new Select(year);
+        int rndmYear = random.nextInt(120);
+        select3.selectByIndex(rndmYear);
+
+        String rndmAddress = faker.address().streetAddress();
+        String rndmCity = faker.address().city();
+
+        driver.findElement(By.id("firstname")).sendKeys(rndmName);
+        driver.findElement(By.id("lastname")).sendKeys(rndmLastName);
+        driver.findElement(By.id("address1")).sendKeys(rndmAddress);
+        driver.findElement(By.id("city")).sendKeys(rndmCity);
+
+        WebElement state = driver.findElement(By.id("id_state"));
+        Select selectState = new Select(state);
+        int rndmState = random.nextInt(51);
+        selectState.selectByIndex(rndmState);
+        String rndmZip = faker.address().zipCode().substring(0,5);
+        driver.findElement(By.id("postcode")).sendKeys(rndmZip);
+
+        WebElement country = driver.findElement(By.id("id_country"));
+        Select selectCountry = new Select(country);
+        selectCountry.selectByValue("21");
+
+        String rndmCellPhone = faker.phoneNumber().cellPhone();
+        driver.findElement(By.id("phone_mobile")).sendKeys(rndmCellPhone);
+
+        driver.findElement(By.id("alias")).sendKeys("My address: ");
+
+//        8. Click on Register
+        driver.findElement(By.xpath("//button[@id='submitAccount']//span")).click();
+
+    }
+
+
+}
 
 //    public class TestBase {
 //        protected static WebDriver driver;
@@ -202,4 +282,4 @@ public class TestBase {
 //        driver.findElement(By.xpath("//button[@id='submitAccount']//span")).click();
 //
 //    }
-}
+
