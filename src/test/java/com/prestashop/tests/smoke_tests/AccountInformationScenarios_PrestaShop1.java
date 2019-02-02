@@ -24,6 +24,7 @@ package com.prestashop.tests.smoke_tests;
 //        17. Click save
 //        18. Verify error message “firstname is required.”
 
+import com.prestashop.utilities.ConfigurationReader;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -46,8 +47,9 @@ public class AccountInformationScenarios_PrestaShop1 {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         //        1. Go to http://automationpractice.com/index.php
+        ConfigurationReader.getProperty("url");
         driver.get("http://automationpractice.com/index.php");
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+//        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         //        2. Click Sign in link
         driver.findElement(By.linkText("Sign in")).click();
         //        3. Login using valid username and password

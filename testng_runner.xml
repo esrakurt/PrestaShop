@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="prestashop" verbose="1">
+
+    <test name="PrestaShop Automated Tests">
+        <packages>
+            <package name="com.prestashop.tests.functional_tests.cart"></package>
+        </packages>
+    </test>
+
+</suite>

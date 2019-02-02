@@ -10,8 +10,6 @@ import java.util.Random;
 
 public class CartDetailsTest_PrestaShop2 extends TestBase {
 
-    WebElement randomQuantity;
-
 //    Cart Details
     @Test
     public void cartDetails() throws InterruptedException {
@@ -25,15 +23,15 @@ public class CartDetailsTest_PrestaShop2 extends TestBase {
         product.click();
 
 //      4. Enter a random quantity between 2 and 5
-
-        randomQuantity = driver.findElement(By.xpath("//a[@class='btn btn-default button-plus product_quantity_up']/span"));
-        Random random = new Random();
-        int quantity = random.nextInt(2) + 1;
-        randomQuantity();
+        Random r = new Random();
+        int quantity = r.nextInt(4)+1;
+        String qtty = (" "+quantity+" ").trim();
+        driver.findElement(By.id("quantity_wanted")).clear();
+        driver.findElement(By.id("quantity_wanted")).sendKeys(qtty);
 
 //      5. Select a different size
         Random rndmSize = new Random();
-        int randomSize = random.nextInt(2) + 1;
+        int randomSize = rndmSize.nextInt(2) + 1;
         driver.findElement(By.xpath("//select[@id='group_1']/option[@value='"+randomSize+"']")).click();
 
 //      6. Click on add to cart
@@ -61,15 +59,13 @@ public class CartDetailsTest_PrestaShop2 extends TestBase {
         WebElement iframe = driver.findElement(By.xpath("//iframe[@class='fancybox-iframe']"));
         driver.switchTo().frame(iframe);
 
-        randomQuantity = driver.findElement(By.xpath("//a[@class='btn btn-default button-plus product_quantity_up']"));
-        Thread.sleep(2000);
-        randomQuantity();
-        Thread.sleep(2000);
+        driver.findElement(By.id("quantity_wanted")).clear();
+        driver.findElement(By.id("quantity_wanted")).sendKeys(qtty);
 
 //      12. Select a different size
 //        driver.findElement(By.xpath("//select[@id='group_1']/option[@value='2']")).click();
         Random rndmSizeForSaleItem = new Random();
-        int randomSizeForSaleItem = random.nextInt(2) + 1;
+        int randomSizeForSaleItem = rndmSizeForSaleItem.nextInt(2) + 1;
         driver.findElement(By.xpath("//select[@id='group_1']/option[@value='"+randomSizeForSaleItem+"']")).click();
 
 //      13. Click on add to cart
@@ -89,37 +85,69 @@ public class CartDetailsTest_PrestaShop2 extends TestBase {
 //      16. Hover over the Cart icon
         actions.moveToElement(driver.findElement(By.xpath("//a[@title='View my shopping cart']"))).perform();
 
-//      17. Verify that correct total is displayed
+        //      17. Verify that correct total is displayed
+
+        WebElement cartTotal = driver.findElement(
+                By.xpath("//div[@class='cart-prices-line last-line']//span[@class='price cart_block_total ajax_block_cart_total']"));
+        actions.moveToElement(cartTotal).build().perform();
+        WebElement crtTotal = driver.findElement(By.xpath("//span[@class='price cart_block_total ajax_block_cart_total']"));
+        String crtTtal = crtTotal.getText();
+        Assert.assertTrue(crtTotal.isDisplayed());
 
 //      18. Verify that total is correct based on the price and item count of the products you added to cart. (Shipping is always $2)
+
+        driver.findElement(By.xpath("//a[@title='View my shopping cart']//b")).click();
+
+        WebElement blouseP = driver.findElement(By.xpath("//tr[@id='product_2_7_0_0']//td[6]//span"));
+        String blousePrice = blouseP.getText().substring(1);
+
+        WebElement printedP = driver.findElement(By.xpath("//tr[@id='product_7_35_0_0']//td[6]//span"));
+        String printedPrice = printedP.getText().substring(1);
+
+        WebElement totalP= driver.findElement(By.xpath("//table[@id='cart_summary']//tfoot//tr[7]//td[2]//span"));
+        String totalPrice = totalP.getText().substring(1);
+
+        double expectedTotalPrice = Double.valueOf(blousePrice) + Double.valueOf(printedPrice) + 2.00;
+
+        Assert.assertEquals(expectedTotalPrice, Double.valueOf(totalPrice));
     }
 
-        public void randomQuantity(){
-            Random random = new Random();
-            int quantity = random.nextInt(3);
+//    public int getQuantity() {
+//         Random r = new Random();
+//         int quantity = r.nextInt(4)+1;
+//        return quantity;
+//    }
 
-            switch (quantity){
-
-                case 0:
-                    randomQuantity.click();
-                    break;
-                case 1:
-                    randomQuantity.click();
-                    randomQuantity.click();
-                    break;
-                case 2:
-                    randomQuantity.click();
-                    randomQuantity.click();
-                    randomQuantity.click();
-                    break;
-                case 3:
-                    randomQuantity.click();
-                    randomQuantity.click();
-                    randomQuantity.click();
-                    randomQuantity.click();
-                    break;
-            }
-        }
+//        public void randomQuantity(){
+//            Random random = new Random();
+//            int quantity = random.nextInt(3);
+//
+//            switch (quantity){
+//
+//                case 0:
+//                    randomQuantity.click();
+//                    break;
+//                case 1:
+//                    randomQuantity.click();
+//                    randomQuantity.click();
+//                    break;
+//                case 2:
+//                    randomQuantity.click();
+//                    randomQuantity.click();
+//                    randomQuantity.click();
+//                    break;
+//                case 3:
+//                    randomQuantity.click();
+//                    randomQuantity.click();
+//                    randomQuantity.click();
+//                    randomQuantity.click();
+//                    break;
+//            }
+//        }
+//        randomQuantity = driver.findElement(By.xpath("//a[@class='btn btn-default button-plus product_quantity_up']/span"));
+//        Random random = new Random();
+//        int quantity = random.nextInt(2) + 1;
+//        randomQuantity();
 
     }
 

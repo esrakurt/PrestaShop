@@ -6,10 +6,10 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class Homepage {
+public class HomePage {
 
     // any page object has to have this constructor
-    public Homepage(){
+    public HomePage(){
         PageFactory.initElements(Driver.getDriver(), this);
     }
 

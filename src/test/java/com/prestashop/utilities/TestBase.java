@@ -1,5 +1,8 @@
 package com.prestashop.utilities;
 
+        import com.aventstack.extentreports.ExtentReports;
+        import com.aventstack.extentreports.ExtentTest;
+        import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
         import com.github.javafaker.Faker;
         import io.github.bonigarcia.wdm.WebDriverManager;
         import org.openqa.selenium.By;
@@ -9,43 +12,87 @@ package com.prestashop.utilities;
         import org.openqa.selenium.interactions.Actions;
         import org.openqa.selenium.support.ui.Select;
         import org.testng.Assert;
-        import org.testng.annotations.AfterMethod;
-        import org.testng.annotations.BeforeClass;
-        import org.testng.annotations.BeforeMethod;
+        import org.testng.ITestResult;
+        import org.testng.annotations.*;
         import org.testng.asserts.SoftAssert;
 
+        import java.io.IOException;
         import java.util.Random;
         import java.util.concurrent.TimeUnit;
 
-public class TestBase {
+public abstract class TestBase {
     protected WebDriver driver;
+    protected Pages pages;
     protected Actions actions;
     protected SoftAssert softAssert;
     protected Random random;
-//    protected Faker faker;
 
-//
-//    @BeforeClass
-//    public void setupClass(){
-//
-//        WebDriverManager.chromedriver().setup();
-//    }
+    protected static ExtentReports report;
+    protected static ExtentHtmlReporter htmlReporter;
+    protected static ExtentTest extentLogger;
+    public WebElement enterRandomQuantity;
 
     @BeforeMethod
     public void setUpMethod(){
 //        driver=new ChromeDriver() ;
-        driver= Driver.getDriver();
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        driver.get("http://automationpractice.com/index.php");
+        driver = Driver.getDriver();
+//        driver.get("http://automationpractice.com/index.php");
+        pages = new Pages();
         actions = new Actions(driver);
         softAssert = new SoftAssert();
+        driver.get(ConfigurationReader.getProperty("url"));
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        }
+
+
+    @AfterMethod
+    public void tearDownMethod(ITestResult result) throws IOException {
+        // if any test fails, it can detect it, take a screenshot at the point and attach to the report
+        if (result.getStatus() == ITestResult.FAILURE) {
+            String screenshotLocation = BrowserUtils.getScreenshot(result.getName());
+            extentLogger.fail(result.getName());
+            extentLogger.addScreenCaptureFromPath(screenshotLocation);
+            extentLogger.fail(result.getThrowable());
+
+        } else if (result.getStatus() == ITestResult.SKIP) {
+            extentLogger.skip("Test Case Skipped: " + result.getName());
+        }
+        Driver.closeDriver();
+    }
+
+    @BeforeTest
+    public void setUpTest() {
+        report = new ExtentReports();
+        // this is our custom location of the report that will be generated
+        // report will be generated in the current project inside folder: test-output
+        // report file name: report.html
+        String filePath = System.getProperty("user.dir") + "/test-output/report.html";
+        // initialize the htmlReporter with the path to the report
+        htmlReporter = new ExtentHtmlReporter(filePath);
+
+        // we attach the htmlreport to our report
+        report.attachReporter(htmlReporter);
+
+        report.setSystemInfo("Environment", "Staging");
+        report.setSystemInfo("Browser", ConfigurationReader.getProperty("browser"));
+        report.setSystemInfo("OS", System.getProperty("os.name"));
+
+        // we can add many information as we want, below is just an example
+        report.setSystemInfo("QA Engineer", System.getProperty("Mary"));
+
+        htmlReporter.config().setDocumentTitle("Prestashop Reports");
+        htmlReporter.config().setReportName("Prestashop Automated Test Reports");
+//        htmlReporter.config().setTheme(Theme.DARK);
 
     }
 
-//    @AfterMethod
-//    public void tearDown(){
-//        driver.quit();
-//    }
+    @AfterTest
+    public void tearDownTest() {
+        report.flush();
+    }
+
+
+
 
     Faker faker = new Faker();
 
@@ -141,145 +188,6 @@ public class TestBase {
 
     }
 
-
 }
 
-//    public class TestBase {
-//        protected static WebDriver driver;
-//        protected Actions actions;
-//        protected SoftAssert softAssert;
-//
-//        Faker fakeGuy = new Faker();
-//
-//        public final String EMAIL = fakeGuy.internet().emailAddress();
-//        public final String NAME = fakeGuy.name().firstName();
-//        public final String LASTNAME = fakeGuy.name().lastName();
-//        public final String PASSWORD = fakeGuy.internet().password();
-//        public final int DAYS = fakeGuy.number().numberBetween(1, 31);
-//        public final int MONTH = fakeGuy.number().numberBetween(1, 12);
-//        public final int YEAR = fakeGuy.number().numberBetween(1930, 2000);
-//        public final String ADDRESS1 = fakeGuy.address().streetAddress();
-//        public final String ADDRESS2 = fakeGuy.address().secondaryAddress();
-//        public final String CITY = fakeGuy.address().city();
-//        public final String STATE = fakeGuy.address().state();
-//        public final String ZIPCODE = fakeGuy.address().zipCode();
-//        public final String STATEABBR = fakeGuy.address().stateAbbr();
-//        public final String PHONENUMBER = fakeGuy.phoneNumber().cellPhone();
-//        public final String COMPANY = fakeGuy.company().name();
-//        public final double RANDOMNUMBER = Math.random();
-//        public final String US = "United States";
-//
-//        public final String CREDITCARD = fakeGuy.finance().creditCard();
-//
-//
-//
-//
-//        public final void INFO() {
-//            System.out.println("Email: " + EMAIL);
-//            System.out.println("Name: " + NAME);
-//            System.out.println("Last Name: " + LASTNAME);
-//            System.out.println("Password: " + PASSWORD);
-//            System.out.println("Day: " + DAYS + ", Month: " + MONTH + ", Year: " + YEAR);
-//            System.out.println("Address 1: " + ADDRESS1 + ", Address 2: " + ADDRESS2);
-//            System.out.println("City: " + CITY);
-//            System.out.println("State: " + STATE);
-//            System.out.println("Zip code: " + ZIPCODE);
-//            System.out.println("State abbreviation: " + STATEABBR);
-//            System.out.println("Phone number: " + PHONENUMBER);
-//            System.out.println("Company name: " + COMPANY);
-//            System.out.println("Double Number: " + RANDOMNUMBER);
-//            System.out.println("County: " + US);
-//        }
-//
-//        @BeforeClass
-//        public void setUpClass() {
-//            driver = Driver.getDriver();
-//            actions = new Actions(driver);
-//            softAssert = new SoftAssert();
-//            driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-//
-//        }
-//
-//        public void timeWait2(){
-//            try {
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        public void timeWait4(){
-//            try {
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//
-//        @AfterMethod
-//        public void setDownMethod(){
-//            // Driver.closeDriver();
-//            softAssert.assertAll();
-//        }
-//
-//
-//    }
-
-
-//    public void fillOutRequirements(){
-//        //        7. Fill out all the required steps
-//        Random random = new Random();
-//        int rndmGender = random.nextInt(2)+1;
-//        driver.findElement(By.xpath("//div[@class='account_creation']/div[1]/div[rndmgender]/label/div[rndmGender]")).click(); // click on Mrs
-//        String rndmName = faker.name().firstName();
-//        driver.findElement(By.id("customer_firstname")).sendKeys(rndmName);
-//        String rndmLastName = faker.name().lastName();
-//        driver.findElement(By.id("customer_lastname")).sendKeys(rndmLastName);
-//        String rndmPassword = faker.internet().password();
-//        driver.findElement(By.id("passwd")).sendKeys(rndmPassword);
-//        WebElement day = driver.findElement(By.id("days"));
-//        day.click();
-//        Select select1 = new Select(day);
-//        int rndmDay = random.nextInt(30)+1;
-//        select1.selectByIndex(rndmDay);
-//
-//        WebElement month = driver.findElement(By.id("months"));
-//        month.click();
-//        Select select2 = new Select(month);
-//        int rndmMonth = random.nextInt(11)+1;
-//        select2.selectByIndex(rndmMonth);
-//
-//        WebElement year = driver.findElement(By.id("years"));
-//        year.click();
-//        Select select3 = new Select(year);
-//        int rndmYear = random.nextInt(120);
-//        select3.selectByIndex(rndmYear);
-//
-//        String rndmAddress = faker.address().streetAddress();
-//        String rndmCity = faker.address().city();
-//
-//        driver.findElement(By.id("firstname")).sendKeys(rndmName);
-//        driver.findElement(By.id("lastname")).sendKeys(rndmLastName);
-//        driver.findElement(By.id("address1")).sendKeys(rndmAddress);
-//        driver.findElement(By.id("city")).sendKeys(rndmCity);
-//
-//        WebElement state = driver.findElement(By.id("id_state"));
-//        Select selectState = new Select(state);
-//        int rndmState = random.nextInt(51);
-//        selectState.selectByIndex(rndmState);
-//        String rndmZip = faker.address().zipCode();
-//        driver.findElement(By.id("postcode")).sendKeys(rndmZip);
-//
-//        WebElement country = driver.findElement(By.id("id_country"));
-//        Select selectCountry = new Select(country);
-//        selectCountry.selectByValue("21");
-//        String rndmCellPhone = faker.phoneNumber().cellPhone();
-//        driver.findElement(By.id("phone_mobile")).sendKeys(rndmCellPhone);
-//
-//        driver.findElement(By.id("alias")).sendKeys("My address: ");
-//
-////        8. Click on Register
-//        driver.findElement(By.xpath("//button[@id='submitAccount']//span")).click();
-//
-//    }
 

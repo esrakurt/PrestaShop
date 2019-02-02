@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Web Orders Smoke test suite">
+
+    <test name="Smoke">
+
+        <packages>
+            <package name="com.prestashop.tests.smoke_tests"/>
+        </packages>
+    </test>
+</suite>

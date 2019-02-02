@@ -28,7 +28,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.smartcardio.ATR;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -67,8 +66,8 @@ public class ProductInformationScenarios_PrestaShop1 {
         String productPageName = driver.findElement(By.xpath("//div[@class='pb-center-column col-xs-12 col-sm-4']//h1")).getText();
         String productPagePrice = driver.findElement(By.xpath("//span[@id='our_price_display']")).getText();
 
-        System.out.println("Homepage product name: " + productName +" | Product page product name: " + productPageName);
-        System.out.println("Homepage product price: " + productPrice +" | Product page product price: " + productPrice);
+        System.out.println("HomePage product name: " + productName +" | Product page product name: " + productPageName);
+        System.out.println("HomePage product price: " + productPrice +" | Product page product price: " + productPrice);
 
         Assert.assertEquals(productName, productPageName);
         Assert.assertEquals(productPrice, productPagePrice);
